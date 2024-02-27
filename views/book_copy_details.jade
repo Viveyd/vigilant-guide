@@ -1,0 +1,29 @@
+extends layout 
+block extrascripts 
+  script(src="/javascripts/delete-confirm.js")
+block content 
+    h1 ID: #{copy._id},
+    p
+        strong Title:  
+        a(href=copy.book.url) #{copy.book.title}
+    p
+        strong Imprint:  
+        span #{copy.imprint}
+    p
+        strong Status:  
+        span #{copy.status}
+    if copy.status !== "Available"
+        p
+            strong #{copy.status === "Loaned" ? "Due back on" : "Available on"}:  
+
+            span #{copy.due_back_luxon}
+
+    form(method="GET" action="#{copy.url}/update") 
+        button(type="submit") Update
+
+    button(id="delete-trigger" type="button") Delete
+
+    div(id="delete-confirmer" style="display:none")
+        p(style='color:red') Are you sure you want to delete this copy?
+        form(method="POST" action="#{copy.url}/delete") 
+            button(id="true-submit" type="submit") Yes

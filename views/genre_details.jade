@@ -1,0 +1,30 @@
+extends layout
+block extrascripts 
+  script(src="/javascripts/delete-confirm.js")
+block content
+  h1 Genre: #{genre.name}
+
+  div(style='margin-left:20px;margin-top:20px')
+
+    h4 Books
+    if genre_books.length
+      dl
+        each book in genre_books
+          dt
+            a(href=book.url) #{book.title}
+          dd #{book.summary}
+    else
+      p This genre has no books.
+
+  form(method="GET" action="#{genre.url}/update") 
+    button(type="submit") Update
+  
+  if hasDependentsErr
+    p(style='background-color:pink;border:1px solid black;padding: 1em') Delete the following books first before attempting to delete this genre.
+
+  button(id="delete-trigger" type="button") Delete
+
+  div(id="delete-confirmer" style="display:none")
+    p(style='color:red') Are you sure you want to delete this genre?
+    form(method="POST" action="#{genre.url}/delete") 
+      button(id="true-submit" type="submit") Yes

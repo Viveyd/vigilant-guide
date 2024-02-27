@@ -1,0 +1,10 @@
+extends layout 
+block content 
+    h1= title 
+    if list.length
+     ul 
+      each item in list 
+       li 
+        a(href=item.url)= item.name
+    else
+        p There are no genres

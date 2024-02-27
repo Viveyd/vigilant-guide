@@ -1,0 +1,48 @@
+extends layout
+block extrascripts 
+  script(src="/javascripts/delete-confirm.js")
+block content
+  h1 Title: #{book.title}
+
+  p #[strong Author: ]
+    a(href=book.author.url) #{book.author.name}
+  p #[strong Summary:] #{book.summary}
+  p #[strong ISBN:] #{book.isbn}
+  p #[strong Genre: ]
+    each val, index in book.genre
+      a(href=val.url) #{val.name}
+      if index < book.genre.length - 1
+        |,&nbsp;
+
+  form(method="GET" action="#{book._id}/update") 
+    button(type="submit") Update
+
+  if hasDependentsErr
+    p(style='background-color:pink;border:1px solid black;padding: 1em') Delete all copies of this book first before deleting.
+
+  button(id="delete-trigger" type="button") Delete
+
+  div(id="delete-confirmer" style="display:none")
+    p(style='color:red') Are you sure you want to delete this book?
+    form(method="POST" action="#{book._id}/update") 
+      button(id="true-submit" type="submit") Yes
+
+  div(style='margin-left:20px;margin-top:20px')
+    h4 Copies
+
+    each copy in bookCopies
+      hr
+      if copy.status=='Available'
+        p.text-success #{copy.status}
+      else if copy.status=='Maintenance'
+        p.text-danger #{copy.status}
+      else
+        p.text-warning #{copy.status}
+      p #[strong Imprint:] #{copy.imprint}
+      if copy.status!='Available'
+        p #[strong Due back:] #{copy.due_back}
+      p #[strong Id: ]
+        a(href=copy.url) #{copy._id}
+
+    else
+      p There are no copies of this book in the library.

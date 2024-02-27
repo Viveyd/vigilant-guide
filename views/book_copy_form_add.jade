@@ -1,0 +1,30 @@
+extends layout 
+
+block content 
+    form(method="POST")
+        label Book:
+            select(name="book" required)
+                each book in books
+                    if lastAttempt
+                        option(value=book._id selected=lastAttempt.book._id.toString() === book._id.toString())= book.title
+                    else
+                        option(value=book._id)= book.title
+        label Imprint: 
+            input(type="text" name="imprint" value=lastAttempt ? lastAttempt.imprint : "" required)
+        label Date when book available: 
+            input(type="date" name="due_back" value=lastAttempt ? lastAttempt.due_back_yyyy_mm_dd : "" required)
+        label Status: 
+            select(name="status" required)
+                - const options = ['Maintenance', 'Available', 'Loaned', 'Reserved'];
+                if lastAttempt 
+                    each val in options
+                        option(value=val selected=lastAttempt.status === val)= val
+                else
+                    each val in options
+                        option(value=val)= val
+        button(type="submit") Submit
+    
+    if errors 
+        ul 
+        each error in errors 
+            li!= error.msg
